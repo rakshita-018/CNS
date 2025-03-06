@@ -11,7 +11,7 @@ public class TW5 {
 
         int size[] = new int[n];
         System.out.println("Enter size of packets");
-        for(i=0; i<n; i++){
+        for(int i=0; i<n; i++){
             size[i] = sc.nextInt();
         }
 
@@ -21,13 +21,13 @@ public class TW5 {
         System.out.println("Enter the output rate: ");
         int rate = sc.nextInt();
 
-        for(i=0; i<n; i++){
-            System.out.println("Time "+ c);
+        for(int i=0; i<n; i++){
+            System.out.println("Time "+ time);
             if(size[i] > bucketSize){
-                System.out.println("dropped: " + c);
+                System.out.println("dropped: " + time);
             }
             else if(size[i] + rem > bucketSize){
-                System.out.println("dropped: " + c);
+                System.out.println("dropped: " + time);
             }
             else{
                 rem = rem + size[i];
@@ -45,12 +45,12 @@ public class TW5 {
             }else{
                 System.out.println(" bytes still to be transmitted  " + rem);
             }
-            c++;
+            time++;
         }
 
             while(rem!=0){
-                System.out.println("Time "+ c);
-                c++;
+                System.out.println("Time "+ time);
+                time++;
 
                 if(rem>=rate){ 
                     System.out.println(" bytes transmitted  "  + rate); 
