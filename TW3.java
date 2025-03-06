@@ -45,29 +45,28 @@ public class TCPEchoServer {
     public static final int PORT = 80;
 
     public static void main(String[] args) throws IOException {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Listing on port " + PORT);
+        ServerSocket serverSocket = new ServerSocket(PORT);
+        System.out.println("Listing on port " + PORT);
 
-            while(true){
-                try(Socket socket = serverSocket.accept();
-                InputStreamReader isr = new InputStreamReader(socket.getInputStream());
-                BufferedReader reader = new BufferedReader(isr);
-                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true)){
-   
-                    System.out.println("Connection accepted"); 
-   
-                    String line;
-                    while((line = reader.readLine()) != null){
-                        System.out.println("Server received: " + line + " sending to client");
-                        writer.println(line);
+        while(true){
+            try(Socket socket = serverSocket.accept();
+            InputStreamReader isr = new InputStreamReader(socket.getInputStream());
+            BufferedReader reader = new BufferedReader(isr);
+            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true)){
 
-                        if(line.equals("Bye")){
-                            break;
-                        }
+                System.out.println("Connection accepted"); 
+
+                String line;
+                while((line = reader.readLine()) != null){
+                    System.out.println("Server received: " + line + " sending to client");
+                    writer.println(line);
+
+                    if(line.equals("Bye")){
+                        break;
                     }
                 }
             }
         }
-
+        
     }
 }
