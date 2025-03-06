@@ -3,10 +3,11 @@ import java.util.Scanner;
 public class TW5 {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int c = 0, rem=0, i, rate, n, bucketSize;;
+        int time =0;
+        int rem =0;
 
         System.out.println("Enter number of packets: ");
-        n = sc.nextInt();
+        int n = sc.nextInt();
 
         int size[] = new int[n];
         System.out.println("Enter size of packets");
@@ -15,10 +16,10 @@ public class TW5 {
         }
 
         System.out.println("Enter size of buckets: ");
-        bucketSize = sc.nextInt();
+        int bucketSize = sc.nextInt();
 
         System.out.println("Enter the output rate: ");
-        rate = sc.nextInt();
+        int rate = sc.nextInt();
 
         for(i=0; i<n; i++){
             System.out.println("Time "+ c);
