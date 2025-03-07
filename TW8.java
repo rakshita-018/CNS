@@ -1,71 +1,40 @@
-package com.mycompany.sample6;
+import java.math.BigInteger;
 import java.util.Scanner;
 
-public class Sample6 {
-
-    public static void CRC(char[] a, String gen,int msglength,int genlength,char[] rem)
-    {
-        for(int i=0;i<msglength;i++)
-        {
-            if(a[i]=='1')
-            {
-                for(int j=0;j<=genlength;j++)
-                {
-                    if(a[i+j]==gen.charAt(j)) a[i+j]='0';
-                    else a[i+j]='1';
-                }
-            }
-        }
-        for(int i=0;i<genlength;i++)
-        {
-            rem[i]=a[i+msglength];
-        }
-    }
+public class TW8 {
     public static void main(String[] args) {
-       Scanner r = new Scanner(System.in);
-       System.out.println("SENDER SIDE");
-       System.out.println("Enter Message Polynomial: ");
-       String msg = r.nextLine();
-       System.out.println("Enter Generator Polynomial: ");
-       String gen = r.nextLine();
-       
-       int msglength = msg.length();
-       int genlength = gen.length()-1;
-       char a[] = new char[msglength+genlength];
+        Scanner sc = new Scanner(System.in);
 
-       for(int i=0;i<msglength;i++)
-       {
-           a[i] = msg.charAt(i);
-       }
-       for(int i=msglength;i<msglength+genlength;i++)
-       {
-           a[i] = '0';
-       }
-       char[] rem = new char[genlength];
-       CRC(a,gen,msglength,genlength,rem);
-       System.out.println("Checksum calcuated is: "+String.valueOf(rem));
+        System.out.println("Enter Prime Number p: ");
+        BigInteger p = sc.nextBigInteger();
 
-       System.out.println("\n\nRECEVER SIDE");
-       System.out.println("Enter Receved Polynomial: ");
-       String receved = r.nextLine();
-       char b[] = new char[msglength+genlength];
-       for(int i=0;i<receved.length();i++)
-       {
-           b[i] = receved.charAt(i);
-       }
-       for(int i=msglength,j=0;i<msglength+genlength;i++,j++)
-       {
-           b[i] = rem[j];
-       }
-       CRC(b,gen,msglength,genlength,rem);
-       System.out.println("Checksum calculated is: "+String.valueOf(rem));
-       int flag = 1;
-       for(int i=0;i<genlength;i++)
-       {
-           if(rem[i]!='0') flag=0;
-       }
-       if(flag==1) System.out.println("There is no error..");
-       else System.out.println("There is a error..");
+        System.out.println("Enter Prime Number q: ");
+        BigInteger q = sc.nextBigInteger();
+
+        BigInteger n = p.multiply(q);
+        BigInteger phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE));
+
+        System.out.println("phi: "+phi);
+        System.out.println("Enter public exponent: ");
+        BigInteger e = sc.nextBigInteger();
+
+        if(e.compareTo(BigInteger.ONE)<=0 || e.compareTo(phi) >=0 || !e.gcd(phi).equals(BigInteger.ONE)){
+            System.out.println("Invalid value");
+            return ;
+        }
+
+        BigInteger d = e.modInverse(phi);
+        System.out.println("Enter the message in integer: ");
+        BigInteger m = sc.nextBigInteger();
+
+        if(m.compareTo(BigInteger.ZERO)<0 || m.compareTo(n)>=0){
+            System.out.println("Invalid Message");
+            return;
+        }
+        
+        BigInteger c = m.modPow(e, n);
+        System.out.println("Private key d: " + d);
+        System.out.println("Cipher text c :" + c);
+        System.out.println("decrypt: " + c.modPow(d,n));
     }
 }
-
