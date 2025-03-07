@@ -1,117 +1,70 @@
+package com.mycompany.sample6;
 import java.util.Scanner;
 
-public class TW6 {
-        public static void main(String[] args) {
-        int i,j,flag=0;
-        Scanner scanner = new Scanner(System.in);
+public class Sample6 {
 
-        System.out.println("Enter the message polynomial bit pattern:");
-        String msg = scanner.nextLine();
-        int msgLen = msg.length();
-
-        System.out.println("Enter the generator polynomial bit pattern:");
-        String gen = scanner.nextLine();
-        int genDegree = gen.length() - 1;
-        
-
-        char[] a = new char[100];
-        char[] rem = new char[50];
-     
-
-        for (i = 0; i < msgLen; i++) {
-            a[i] = msg.charAt(i);
-        }
-
-        for (i = 0; i <= genDegree; i++) {
-            a[i + msgLen] = '0';
-        }
-          a[genDegree + msgLen]='\0';
-
-        System.out.print("The message polynomial when appended with zeros is: ");
-        System.out.println(a);
-
-        // Perform modulo operation
-        for (i = 0; i < msgLen; i++) {
-            if (a[i] == '1') {
-                for (j = 0; j <= genDegree; j++) {
-                    if (a[i + j] == gen.charAt(j))
-                        a[i + j] = '0';
-                    else
-                        a[i + j] = '1';
+    public static void CRC(char[] a, String gen,int msglength,int genlength,char[] rem)
+    {
+        for(int i=0;i<msglength;i++)
+        {
+            if(a[i]=='1')
+            {
+                for(int j=0;j<=genlength;j++)
+                {
+                    if(a[i+j]==gen.charAt(j)) a[i+j]='0';
+                    else a[i+j]='1';
                 }
             }
         }
-
-        a[i + genDegree + 1] = '\0';
- 
-
-        for (i = 0; i <= genDegree; i++) {
-            rem[i] = a[i + msgLen];
+        for(int i=0;i<genlength;i++)
+        {
+            rem[i]=a[i+msglength];
         }
-          rem[genDegree] = '\0';
-        System.out.print("\nThe checksum calculated is:\n ");
-        System.out.println(rem);
-
-        for (i = 0; i < msgLen; i++) {
-            a[i] = msg.charAt(i);
-        }
-
-        System.out.print("\nThe polynomial with checksum is: ");
-        System.out.println(a);
-
+    }
+    public static void main(String[] args) {
+       Scanner r = new Scanner(System.in);
+       System.out.println("SENDER SIDE");
+       System.out.println("Enter Message Polynomial: ");
+       String msg = r.nextLine();
+       System.out.println("Enter Generator Polynomial: ");
+       String gen = r.nextLine();
        
-// receiver side
+       int msglength = msg.length();
+       int genlength = gen.length()-1;
+       char a[] = new char[msglength+genlength];
 
-       
-         System.out.println("Enter the received polynomial bit pattern:");
-         msg = scanner.nextLine();
-         msgLen = msg.length();
+       for(int i=0;i<msglength;i++)
+       {
+           a[i] = msg.charAt(i);
+       }
+       for(int i=msglength;i<msglength+genlength;i++)
+       {
+           a[i] = '0';
+       }
+       char[] rem = new char[genlength];
+       CRC(a,gen,msglength,genlength,rem);
+       System.out.println("Checksum calcuated is: "+String.valueOf(rem));
 
-         char[] b = new char[100];
-        char[] remrev = new char[50];
-     
-
-        for (i = 0; i < msgLen; i++) {
-            b[i] = msg.charAt(i);
-        }
-       
-
-      for (i = 0; i <= genDegree; i++) {
-            b[i + msgLen] = rem[i];
-        }
-          b[genDegree + msgLen]='\0';
-      System.out.println("Message appended with CRC");
-        System.out.println(b);
-
-   for (i = 0; i < msgLen; i++) {
-            if (b[i] == '1') {
-                for (j = 0; j <= genDegree; j++) {
-                    if (b[i + j] == gen.charAt(j))
-                        b[i + j] = '0';
-                    else
-                        b[i + j] = '1';
-                }
-            }
-        }
-
-        b[i + genDegree + 1] = '\0';
- 
-
-        for (i = 0; i <= genDegree; i++) {
-            remrev[i] = b[i + msgLen];
-        }
-          remrev[genDegree] = '\0';
-        System.out.print("\nThe checksum calculated is:\n ");
-        System.out.println(remrev);
-
-         for(i=0;i<genDegree;i++){
-           if(remrev[i]!='0')
-           flag=1;
-          }
-       if (flag==1)
-        System.out.print("\nReceived message is erroneous ");
-       else
-         System.out.print("\nReceived message is not erroneous ");
-         
-}
+       System.out.println("\n\nRECEVER SIDE");
+       System.out.println("Enter Receved Polynomial: ");
+       String receved = r.nextLine();
+       char b[] = new char[msglength+genlength];
+       for(int i=0;i<receved.length();i++)
+       {
+           b[i] = receved.charAt(i);
+       }
+       for(int i=msglength,j=0;i<msglength+genlength;i++,j++)
+       {
+           b[i] = rem[j];
+       }
+       CRC(b,gen,msglength,genlength,rem);
+       System.out.println("Checksum calculated is: "+String.valueOf(rem));
+       int flag = 1;
+       for(int i=0;i<genlength;i++)
+       {
+           if(rem[i]!='0') flag=0;
+       }
+       if(flag==1) System.out.println("There is no error..");
+       else System.out.println("There is a error..");
+    }
 }
